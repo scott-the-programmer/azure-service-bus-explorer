@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace AzureServiceBusClientTests
+namespace AzureServiceBusExplorerTests
 {
     public class Tests
     {

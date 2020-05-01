@@ -1,4 +1,4 @@
-namespace AzureServiceBusClient.Models.Interfaces
+namespace AzureServiceBusExplorerCore.Models.Interfaces
 {
     public interface IQueue
     {

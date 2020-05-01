@@ -1,6 +1,6 @@
-using AzureServiceBusClient.Models.Interfaces;
+using AzureServiceBusExplorerCore.Models.Interfaces;
 
-namespace AzureServiceBusClient.Models
+namespace AzureServiceBusExplorerCore.Models
 {
     public class Message : IMessage
     {

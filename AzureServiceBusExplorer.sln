@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureServiceBusCLI", "AzureServiceBusCLI\AzureServiceBusCLI.csproj", "{03659AF0-BA58-44D8-8ED3-B4DD3CA9CDBF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureServiceBusExplorerCLI", "AzureServiceBusExplorerCLI\AzureServiceBusExplorerCLI.csproj", "{03659AF0-BA58-44D8-8ED3-B4DD3CA9CDBF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureServiceBusClient", "AzureServiceBusClient\AzureServiceBusClient.csproj", "{CD019258-159D-4117-AF57-296AE6F352A4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureServiceBusExplorerCore", "AzureServiceBusExplorerCore\AzureServiceBusExplorerCore.csproj", "{CD019258-159D-4117-AF57-296AE6F352A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureServiceBusClientTests", "AzureServiceBusClientTests\AzureServiceBusClientTests.csproj", "{26908428-AE88-4BC4-80A3-09AC2804DF54}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureServiceBusExplorerTests", "AzureServiceBusExplorerTests\AzureServiceBusExplorerTests.csproj", "{26908428-AE88-4BC4-80A3-09AC2804DF54}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -4,6 +4,8 @@
         <TargetFramework>netcoreapp3.1</TargetFramework>
 
         <IsPackable>false</IsPackable>
+
+        <RootNamespace>AzureServiceBusClientTests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

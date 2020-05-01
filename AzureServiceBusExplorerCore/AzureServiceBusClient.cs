@@ -1,11 +1,11 @@
 
 using System.Collections.Generic;
-using AzureServiceBusClient.Models;
-using AzureServiceBusClient.Models.Interfaces;
+using AzureServiceBusExplorerCore.Models;
+using AzureServiceBusExplorerCore.Models.Interfaces;
 using Microsoft.Azure.ServiceBus;
 
 
-namespace AzureServiceBusClient
+namespace AzureServiceBusExplorerCore
  {
      public class AzureServiceBusClient
      {
