@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureServiceBusCLI", "AzureServiceBusCLI\AzureServiceBusCLI.csproj", "{03659AF0-BA58-44D8-8ED3-B4DD3CA9CDBF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureServiceBusClient", "AzureServiceBusClient\AzureServiceBusClient.csproj", "{CD019258-159D-4117-AF57-296AE6F352A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureServiceBusClientTests", "AzureServiceBusClientTests\AzureServiceBusClientTests.csproj", "{26908428-AE88-4BC4-80A3-09AC2804DF54}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{03659AF0-BA58-44D8-8ED3-B4DD3CA9CDBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03659AF0-BA58-44D8-8ED3-B4DD3CA9CDBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03659AF0-BA58-44D8-8ED3-B4DD3CA9CDBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03659AF0-BA58-44D8-8ED3-B4DD3CA9CDBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD019258-159D-4117-AF57-296AE6F352A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD019258-159D-4117-AF57-296AE6F352A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD019258-159D-4117-AF57-296AE6F352A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD019258-159D-4117-AF57-296AE6F352A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26908428-AE88-4BC4-80A3-09AC2804DF54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26908428-AE88-4BC4-80A3-09AC2804DF54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26908428-AE88-4BC4-80A3-09AC2804DF54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26908428-AE88-4BC4-80A3-09AC2804DF54}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
