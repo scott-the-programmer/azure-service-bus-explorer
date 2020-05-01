@@ -361,3 +361,6 @@ FodyWeavers.xsd
 
 # Ignore .DS_Store
 .DS_Store
+
+# Rider
+.idea

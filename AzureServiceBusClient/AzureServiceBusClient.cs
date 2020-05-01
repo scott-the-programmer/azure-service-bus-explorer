@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using AzureServiceBusClient.Models;
 using AzureServiceBusClient.Models.Interfaces;
 using Microsoft.Azure.ServiceBus;
-using Microsoft.Azure.ServiceBus.
+
 
 namespace AzureServiceBusClient
  {
@@ -30,8 +30,9 @@ namespace AzureServiceBusClient
          public IList<IMessage> GetMessages(IQueue queue)
          {
              IQueueClient queueClient = GetQueueClient(queue);
-             
-             queueClient.
+
+             return null;
+             //queueClient.
          }
      }
  }
