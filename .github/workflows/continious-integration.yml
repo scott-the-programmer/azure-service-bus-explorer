@@ -26,5 +26,5 @@ jobs:
     - uses: paambaati/codeclimate-action@v2.2.4
       name: Run Coverage
       with:
-        coverageCommand: coverageCommand dotnet test --filter Category!=Integration /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=coverage
+        coverageCommand: dotnet test --filter Category!=Integration /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=coverage
       
