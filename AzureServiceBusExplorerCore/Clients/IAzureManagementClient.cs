@@ -7,5 +7,7 @@ namespace AzureServiceBusExplorerCore.Clients
     public interface IAzureManagementClient
     {
         Task<IList<QueueDescription>> GetQueuesAsync();
+        
+        Task<IList<TopicDescription>> GetTopicsAsync();
     }
 }

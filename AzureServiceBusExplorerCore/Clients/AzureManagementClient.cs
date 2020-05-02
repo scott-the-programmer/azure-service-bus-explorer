@@ -17,5 +17,10 @@ namespace AzureServiceBusExplorerCore.Clients
         {
             return _managementClient.GetQueuesAsync();
         }
+        
+        public Task<IList<TopicDescription>> GetTopicsAsync()
+        {
+            return _managementClient.GetTopicsAsync();
+        }
     }
 }

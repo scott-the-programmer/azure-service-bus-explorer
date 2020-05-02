@@ -28,10 +28,23 @@ namespace AzureServiceBusExplorerIntegrationTests
             AzureManagementRepository repo = new AzureManagementRepository(_managementClientFactory);
             
             //Act
-            var queues = await repo.GetQueues();
+            var queues = await repo.GetQueuesAsync();
 
             //Assert
             Assert.IsNotNull(queues);
+        }
+        
+        [Test]
+        public async Task should_return_list_of_topics()
+        {
+            //Setup
+            AzureManagementRepository repo = new AzureManagementRepository(_managementClientFactory);
+            
+            //Act
+            var topics = await repo.GetTopicsAsync();
+
+            //Assert
+            Assert.IsNotNull(topics);
         }
     }
 }

@@ -18,11 +18,19 @@ namespace AzureServiceBusExplorerCore.Repositories
             _azureManagementClient = managementClientFactory.GetManagementClient();
         }
 
-        public async Task<IList<IQueue>> GetQueues()
+        public async Task<IList<IQueue>> GetQueuesAsync()
         {
             var queueDescriptions = await _azureManagementClient.GetQueuesAsync();
             var queues = queueDescriptions.Select(description => new Queue(description.Path, description.UserMetadata))
                 .ToList<IQueue>();
+            return queues;
+        }
+        
+        public async Task<IList<ITopic>> GetTopicsAsync()
+        {
+            var topicDescriptions = await _azureManagementClient.GetTopicsAsync();
+            var queues = topicDescriptions.Select(description => new Topic(description.Path, description.UserMetadata))
+                .ToList<ITopic>();
             return queues;
         }
     }
