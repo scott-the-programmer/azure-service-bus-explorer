@@ -1,24 +1,25 @@
 using System.Collections.Generic;
+using AzureServiceBusExplorerCore.Factories;
 using AzureServiceBusExplorerCore.Models.Interfaces;
 using Microsoft.Azure.ServiceBus;
 
-namespace AzureServiceBusExplorerCore
+namespace AzureServiceBusExplorerCore.Repositories
 {
-    public class AzureServiceBusClient
+    public class AzureServiceBusRepository
     {
-        private readonly string _serviceBusConnectionString;
+        private readonly IQueueClientFactory _queueClientFactory;
         private readonly Dictionary<string, IQueueClient> _activeQueueClients = new Dictionary<string, IQueueClient>();
 
-        public AzureServiceBusClient(string serviceBusConnectionString)
+        public AzureServiceBusRepository(IQueueClientFactory queueClientFactory)
         {
-            _serviceBusConnectionString = serviceBusConnectionString;
+            _queueClientFactory = queueClientFactory;
         }
 
         public IQueueClient GetQueueClient(IQueue queue)
         {
             if (_activeQueueClients.ContainsKey(queue.QueueName))
                 return _activeQueueClients[queue.QueueName];
-            IQueueClient queueClient = new QueueClient(_serviceBusConnectionString, queue.QueueName);
+            IQueueClient queueClient = _queueClientFactory.GetQueueClient(queue.QueueName);
             _activeQueueClients.Add(queue.QueueName, queueClient);
             return queueClient;
         }
@@ -29,6 +30,11 @@ namespace AzureServiceBusExplorerCore
 
             return null;
             //queueClient.
+        }
+
+        public int CountActiveQueueClients()
+        {
+            return _activeQueueClients.Count;
         }
     }
 }

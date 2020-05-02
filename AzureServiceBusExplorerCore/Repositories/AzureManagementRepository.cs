@@ -5,7 +5,7 @@ using AzureServiceBusExplorerCore.Models;
 using AzureServiceBusExplorerCore.Models.Interfaces;
 using Microsoft.Azure.ServiceBus.Management;
 
-namespace AzureServiceBusExplorerCore
+namespace AzureServiceBusExplorerCore.Repositories
 {
     public class AzureManagementClient
     {
