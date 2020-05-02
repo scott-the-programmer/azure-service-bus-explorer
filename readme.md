@@ -3,6 +3,7 @@
 [![continious-integration](https://github.com/scott-the-programmer/azure-service-bus-explorer/workflows/continious-integration/badge.svg)](https://github.com/scott-the-programmer/azure-service-bus-explorer/actions)
 ![GitHub](https://img.shields.io/github/license/scott-the-programmer/azure-service-bus-explorer?style=flat)
 [![Maintainability](https://api.codeclimate.com/v1/badges/9db0f09ee4418d907ac4/maintainability)](https://codeclimate.com/github/scott-the-programmer/azure-service-bus-explorer/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/9db0f09ee4418d907ac4/test_coverage)](https://codeclimate.com/github/scott-the-programmer/azure-service-bus-explorer/test_coverage)
 
 This is currently a work in progress
 
