@@ -31,6 +31,8 @@ jobs:
         node-version: '12'
     - uses: paambaati/codeclimate-action@v2.2.4
       name: Run Coverage
+      env:
+        CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
       with:
         coverageCommand: dotnet test --filter Category!=Integration /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=coverage
       
