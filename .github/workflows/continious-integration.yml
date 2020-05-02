@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    #Core Build & Test
     - uses: actions/checkout@v2
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
@@ -23,6 +24,11 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Unit Test
       run: dotnet test --no-restore --verbosity normal --filter Category!=Integration
+
+    #Code Climate 
+    - uses: actions/setup-node@master
+      with:
+        node-version: '12'
     - uses: paambaati/codeclimate-action@v2.2.4
       name: Run Coverage
       with:
