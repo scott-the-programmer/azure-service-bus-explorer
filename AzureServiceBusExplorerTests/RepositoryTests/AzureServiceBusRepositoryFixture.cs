@@ -30,7 +30,7 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
         }
 
         [Test]
-        public void should_not_reuse_existing_queue_if_queuename_differs()
+        public void should_not_reuse_existing_queue_if_queue_name_differs()
         {
             //Setup
             var queueClientMock = new Mock<IQueueClient>();
