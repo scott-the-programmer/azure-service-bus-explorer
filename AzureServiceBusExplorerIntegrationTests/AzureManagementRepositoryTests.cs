@@ -23,8 +23,8 @@ namespace AzureServiceBusExplorerIntegrationTests
             _managementClientFactory = new ManagementClientFactory(config["ServiceBusConnection"]);
 
             var repo = new AzureManagementRepository(_managementClientFactory);
-            await repo.DeleteQueueAsync("integration_test_queue");
-            await repo.DeleteQueueAsync("integration_test_topic");
+            await repo.DeleteQueueIfExistsAsync("integration_test_queue");
+            await repo.DeleteQueueIfExistsAsync("integration_test_topic");
         }
 
         [Test]
@@ -41,7 +41,7 @@ namespace AzureServiceBusExplorerIntegrationTests
             Assert.AreEqual(1, queue.Count());
 
             //Delete Queue
-            await repo.DeleteQueueAsync("integration_test_queue");
+            await repo.DeleteQueueIfExistsAsync("integration_test_queue");
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace AzureServiceBusExplorerIntegrationTests
             var repo = new AzureManagementRepository(_managementClientFactory);
 
             //Delete Queue
-            await repo.DeleteQueueAsync("i_do_not_exist");
+            await repo.DeleteQueueIfExistsAsync("i_do_not_exist");
         }
 
         [Test]
@@ -59,7 +59,7 @@ namespace AzureServiceBusExplorerIntegrationTests
             var repo = new AzureManagementRepository(_managementClientFactory);
 
             //Delete Queue
-            await repo.DeleteTopicAsync("i_do_not_exist");
+            await repo.DeleteTopicIfExistsAsync("i_do_not_exist");
         }
 
 
@@ -77,7 +77,7 @@ namespace AzureServiceBusExplorerIntegrationTests
             Assert.AreEqual(1, queue.Count());
 
             //Delete Topic
-            await repo.DeleteTopicAsync("integration_test_topic");
+            await repo.DeleteTopicIfExistsAsync("integration_test_topic");
         }
 
 
@@ -96,7 +96,7 @@ namespace AzureServiceBusExplorerIntegrationTests
             await repo.CreateTopicSubscriptionAsync(subscriber);
 
             //Delete Topic
-            await repo.DeleteTopicAsync("can_create_subscriber_to_topic");
+            await repo.DeleteTopicIfExistsAsync("can_create_subscriber_to_topic");
         }
     }
 }

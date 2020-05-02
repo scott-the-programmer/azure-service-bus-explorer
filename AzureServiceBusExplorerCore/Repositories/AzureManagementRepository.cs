@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AzureServiceBusExplorerCore.Clients;
 using AzureServiceBusExplorerCore.Factories;
+using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Management;
 
 namespace AzureServiceBusExplorerCore.Repositories
@@ -25,9 +27,16 @@ namespace AzureServiceBusExplorerCore.Repositories
             return _azureManagementClient.CreateQueueAsync(queueDescription);
         }
 
-        public Task DeleteQueueAsync(string queueName)
+        public async Task DeleteQueueIfExistsAsync(string queueName)
         {
-            return _azureManagementClient.DeleteQueueIfExistsAsync(queueName);
+            try
+            {
+                await _azureManagementClient.DeleteQueueAsync(queueName);
+            }
+            catch (MessagingEntityNotFoundException)
+            {
+                Console.WriteLine($"Queue {queueName} was not found");
+            }
         }
 
         public Task<IList<TopicDescription>> GetTopicsAsync()
@@ -45,9 +54,16 @@ namespace AzureServiceBusExplorerCore.Repositories
             await _azureManagementClient.CreateTopicSubscription(subscriptionDescription);
         }
 
-        public Task DeleteTopicAsync(string topicName)
+        public async Task DeleteTopicIfExistsAsync(string topicName)
         {
-            return _azureManagementClient.DeleteTopicIfExistsAsync(topicName);
+            try
+            {
+                await _azureManagementClient.DeleteTopicAsync(topicName);
+            }
+            catch (MessagingEntityNotFoundException)
+            {
+                Console.WriteLine($"Topic {topicName} was not found");
+            }
         }
     }
 }

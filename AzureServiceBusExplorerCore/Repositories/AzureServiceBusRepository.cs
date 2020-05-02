@@ -24,13 +24,6 @@ namespace AzureServiceBusExplorerCore.Repositories
             return queueClient;
         }
 
-        // public IList<string> GetMessages(Queue queue)
-        // {
-        //     var queueClient = GetQueueClient(queue);
-
-        //     return null;
-        //     //queueClient.
-        // }
 
         public int CountActiveQueueClients()
         {

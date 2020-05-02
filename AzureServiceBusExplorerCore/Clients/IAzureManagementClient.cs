@@ -9,9 +9,9 @@ namespace AzureServiceBusExplorerCore.Clients
         Task<IList<QueueDescription>> GetQueuesAsync();
         Task<IList<TopicDescription>> GetTopicsAsync();
         Task CreateQueueAsync(QueueDescription queueDescription);
-        Task DeleteQueueIfExistsAsync(string queueName);
+        Task DeleteQueueAsync(string queueName);
         Task CreateTopicAsync(TopicDescription topicDescriptionDescription);
         Task CreateTopicSubscription(SubscriptionDescription subscriptionDescription);
-        Task DeleteTopicIfExistsAsync(string topicName);
+        Task DeleteTopicAsync(string topicName);
     }
 }

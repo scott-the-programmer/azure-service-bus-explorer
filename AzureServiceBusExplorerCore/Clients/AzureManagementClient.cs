@@ -32,16 +32,9 @@ namespace AzureServiceBusExplorerCore.Clients
             return _managementClient.CreateQueueAsync(queueDescription);
         }
 
-        public async Task DeleteQueueIfExistsAsync(string queueName)
+        public async Task DeleteQueueAsync(string queueName)
         {
-            try
-            {
-                await _managementClient.DeleteQueueAsync(queueName);
-            }
-            catch (MessagingEntityNotFoundException)
-            {
-                Console.WriteLine($"Topic {queueName} was not found");
-            }
+            await _managementClient.DeleteQueueAsync(queueName);
         }
 
         public Task CreateTopicAsync(TopicDescription topicDescription)
@@ -54,16 +47,9 @@ namespace AzureServiceBusExplorerCore.Clients
             return _managementClient.CreateSubscriptionAsync(subscriptionDescription);
         }
 
-        public async Task DeleteTopicIfExistsAsync(string topicName)
+        public async Task DeleteTopicAsync(string topicName)
         {
-            try
-            {
-                await _managementClient.DeleteTopicAsync(topicName);
-            }
-            catch (MessagingEntityNotFoundException)
-            {
-                Console.WriteLine($"Topic {topicName} was not found");
-            }
+            await _managementClient.DeleteTopicAsync(topicName);
         }
     }
 }

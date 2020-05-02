@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AzureServiceBusExplorerCore.Clients;
 using AzureServiceBusExplorerCore.Factories;
 using AzureServiceBusExplorerCore.Repositories;
+using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Management;
 using Moq;
 using NUnit.Framework;
@@ -79,17 +80,59 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
             //Setup
             var managementClientMock = new Mock<IAzureManagementClient>();
             var managementClientFactoryMock = new Mock<IManagementClientFactory>();
-            managementClientMock.Setup(mock => mock.DeleteQueueIfExistsAsync(It.IsAny<string>()))
+            managementClientMock.Setup(mock => mock.DeleteQueueAsync(It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
             managementClientFactoryMock.Setup(mock => mock.GetManagementClient()).Returns(managementClientMock.Object);
 
             var repo = new AzureManagementRepository(managementClientFactoryMock.Object);
 
             //Act
-            await repo.DeleteQueueAsync("mock");
+            await repo.DeleteQueueIfExistsAsync("mock");
 
             //Assert
-            managementClientMock.Verify(mock => mock.DeleteQueueIfExistsAsync(It.IsAny<string>()), Times.Once());
+            managementClientMock.Verify(mock => mock.DeleteQueueAsync(It.IsAny<string>()), Times.Once());
+        }
+        
+        [Test]
+        public async Task should_not_throw_if_queue_already_exists_on_delete()
+        {
+            //Setup
+            var managementClientMock = new Mock<IAzureManagementClient>();
+            var managementClientFactoryMock = new Mock<IManagementClientFactory>();
+            managementClientMock.Setup(mock => mock.DeleteQueueAsync(It.IsAny<string>()))
+                .ThrowsAsync(new MessagingEntityNotFoundException("mock"));
+            managementClientFactoryMock.Setup(mock => mock.GetManagementClient()).Returns(managementClientMock.Object);
+
+            var repo = new AzureManagementRepository(managementClientFactoryMock.Object);
+
+            //Act & Assert
+            Assert.Multiple(() =>
+            {         
+                Assert.DoesNotThrowAsync(() => repo.DeleteQueueIfExistsAsync("mock"));
+                managementClientMock.Verify(mock => mock.DeleteQueueAsync(It.IsAny<string>()), Times.Once());
+            });
+        }
+        
+                
+        [Test]
+        public async Task should_not_throw_if_topic_already_exists_on_delete()
+        {
+            //Setup
+            var managementClientMock = new Mock<IAzureManagementClient>();
+            var managementClientFactoryMock = new Mock<IManagementClientFactory>();
+            managementClientMock.Setup(mock => mock.DeleteTopicAsync(It.IsAny<string>()))
+                .ThrowsAsync(new MessagingEntityNotFoundException("mock"));
+            managementClientFactoryMock.Setup(mock => mock.GetManagementClient()).Returns(managementClientMock.Object);
+
+            var repo = new AzureManagementRepository(managementClientFactoryMock.Object);
+
+            //Act & Assert
+            Assert.Multiple(() =>
+            {         
+                Assert.DoesNotThrowAsync(() => repo.DeleteTopicIfExistsAsync("mock"));
+                managementClientMock.Verify(mock => mock.DeleteTopicAsync(It.IsAny<string>()), Times.Once());
+            });
+   
         }
 
         [Test]
@@ -98,17 +141,17 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
             //Setup
             var managementClientMock = new Mock<IAzureManagementClient>();
             var managementClientFactoryMock = new Mock<IManagementClientFactory>();
-            managementClientMock.Setup(mock => mock.DeleteTopicIfExistsAsync(It.IsAny<string>()))
+            managementClientMock.Setup(mock => mock.DeleteTopicAsync(It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
             managementClientFactoryMock.Setup(mock => mock.GetManagementClient()).Returns(managementClientMock.Object);
 
             var repo = new AzureManagementRepository(managementClientFactoryMock.Object);
 
             //Act
-            await repo.DeleteTopicAsync("mock");
+            await repo.DeleteTopicIfExistsAsync("mock");
 
             //Assert
-            managementClientMock.Verify(mock => mock.DeleteTopicIfExistsAsync(It.IsAny<string>()), Times.Once());
+            managementClientMock.Verify(mock => mock.DeleteTopicAsync(It.IsAny<string>()), Times.Once());
         }
 
         [Test]
