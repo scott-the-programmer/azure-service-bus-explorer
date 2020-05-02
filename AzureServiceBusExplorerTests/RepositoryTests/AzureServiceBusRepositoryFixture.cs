@@ -101,6 +101,34 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
                     Assert.AreEqual("abc", messages[0]);
                 });
         }
+        
+        [Test]
+        public async Task should_close_client_after_processing()
+        {
+            //Setup
+            var queueClientMock = new Mock<IQueueClient>();
+            var queueClientFactoryMock = new Mock<IQueueClientFactory>();
+            queueClientMock.Setup(mock =>
+                mock.RegisterMessageHandler(It.IsAny<Func<Message, CancellationToken, Task>>(),
+                    It.IsAny<MessageHandlerOptions>()));
+            queueClientFactoryMock.Setup(mock => mock.GetQueueClient(It.IsAny<string>()))
+                .Returns(queueClientMock.Object);
+            _repo = new AzureServiceBusRepository(queueClientFactoryMock.Object);
+
+
+            //Act
+            var taskHandle = _repo.GetMessages(new QueueDescription("mock"), 1);
+
+            //Mock Messages
+            var messageState = _repo.GetMessageState();
+            messageState.AddMessage("abc");
+
+            //Act
+            await taskHandle;
+
+            //Assert
+            queueClientMock.Verify(mock => mock.CloseAsync(), Times.Once);
+        }
 
         [Test]
         public void should_return_1000_messages()
