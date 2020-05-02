@@ -94,7 +94,7 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
         }
         
         [Test]
-        public async Task should_not_throw_if_queue_already_exists_on_delete()
+        public void should_not_throw_if_queue_already_exists_on_delete()
         {
             //Setup
             var managementClientMock = new Mock<IAzureManagementClient>();
@@ -115,7 +115,7 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
         
                 
         [Test]
-        public async Task should_not_throw_if_topic_already_exists_on_delete()
+        public void should_not_throw_if_topic_already_exists_on_delete()
         {
             //Setup
             var managementClientMock = new Mock<IAzureManagementClient>();
