@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,14 +12,15 @@ namespace AzureServiceBusExplorerCore.Repositories
     public class AzureServiceBusRepository
     {
         private readonly Dictionary<string, IQueueClient> _activeQueueClients = new Dictionary<string, IQueueClient>();
-        private readonly IQueueClientFactory _queueClientFactory;
-        private MessageState _messageState;
 
         private readonly MessageHandlerOptions _messageOptions = new MessageHandlerOptions(MessagePumpExceptionHandler)
         {
             MaxConcurrentCalls = 1,
             AutoComplete = false
         };
+
+        private readonly IQueueClientFactory _queueClientFactory;
+        private MessageState _messageState;
 
         public AzureServiceBusRepository(IQueueClientFactory queueClientFactory)
         {
@@ -90,8 +90,8 @@ namespace AzureServiceBusExplorerCore.Repositories
 
         internal class MessageState
         {
-            private readonly IList<string> _messages;
             private readonly int _maxSize;
+            private readonly IList<string> _messages;
 
             public MessageState(int n)
             {

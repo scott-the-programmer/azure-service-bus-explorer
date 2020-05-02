@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Management;
 
 namespace AzureServiceBusExplorerCore.Clients
