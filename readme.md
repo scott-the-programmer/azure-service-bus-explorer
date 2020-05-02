@@ -1,5 +1,11 @@
 # A Cross Platform Service Bus Explorer
 
+[![continious-integration](https://github.com/scott-the-programmer/azure-service-bus-explorer/workflows/continious-integration/badge.svg)](https://github.com/scott-the-programmer/azure-service-bus-explorer/actions)
+
+![GitHub](https://img.shields.io/github/license/scott-the-programmer/azure-service-bus-explorer?style=flat-square)
+
+[![Test Coverage](https://api.codeclimate.com/v1/badges/9db0f09ee4418d907ac4/test_coverage)](https://codeclimate.com/github/scott-the-programmer/azure-service-bus-explorer/test_coverage)
+
 This is currently a work in progress
 
 The purpose for this project is to deliver a tool that can be used to manage [Azure Service Bus](https://docs.microsoft.com/bs-latn-ba/azure/service-bus-messaging/service-bus-messaging-overview)
