@@ -1,8 +1,6 @@
-using AzureServiceBusExplorerCore.Models.Interfaces;
-
 namespace AzureServiceBusExplorerCore.Models
 {
-    public class Queue : IQueue
+    public class Queue
     {
         public Queue(string name, string description)
         {

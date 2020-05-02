@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using AzureServiceBusExplorerCore.Clients;
 using AzureServiceBusExplorerCore.Factories;
 using AzureServiceBusExplorerCore.Models;
-using AzureServiceBusExplorerCore.Models.Interfaces;
 using Microsoft.Azure.ServiceBus.Management;
 
 namespace AzureServiceBusExplorerCore.Repositories
@@ -18,20 +17,20 @@ namespace AzureServiceBusExplorerCore.Repositories
             _azureManagementClient = managementClientFactory.GetManagementClient();
         }
 
-        public async Task<IList<IQueue>> GetQueuesAsync()
+        public async Task<IList<Queue>> GetQueuesAsync()
         {
             var queueDescriptions = await _azureManagementClient.GetQueuesAsync();
-            var queues = queueDescriptions.Select(description => new Queue(description.Path, description.UserMetadata))
-                .ToList<IQueue>();
+            var queues = queueDescriptions.Select(_ => new Queue(_.Path, _.UserMetadata))
+                .ToList<Queue>();
             return queues;
         }
         
-        public async Task<IList<ITopic>> GetTopicsAsync()
+        public async Task<IList<Topic>> GetTopicsAsync()
         {
             var topicDescriptions = await _azureManagementClient.GetTopicsAsync();
-            var queues = topicDescriptions.Select(description => new Topic(description.Path, description.UserMetadata))
-                .ToList<ITopic>();
-            return queues;
+            var topics = topicDescriptions.Select(_ => new Topic(_.Path, _.UserMetadata))
+                .ToList<Topic>();
+            return topics;
         }
     }
 }

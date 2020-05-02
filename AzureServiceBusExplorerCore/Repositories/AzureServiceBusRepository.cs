@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using AzureServiceBusExplorerCore.Factories;
-using AzureServiceBusExplorerCore.Models.Interfaces;
+using AzureServiceBusExplorerCore.Models;
 using Microsoft.Azure.ServiceBus;
 
 namespace AzureServiceBusExplorerCore.Repositories
@@ -15,7 +15,7 @@ namespace AzureServiceBusExplorerCore.Repositories
             _queueClientFactory = queueClientFactory;
         }
 
-        public IQueueClient GetQueueClient(IQueue queue)
+        public IQueueClient GetQueueClient(Queue queue)
         {
             if (_activeQueueClients.ContainsKey(queue.QueueName))
                 return _activeQueueClients[queue.QueueName];
@@ -24,7 +24,7 @@ namespace AzureServiceBusExplorerCore.Repositories
             return queueClient;
         }
 
-        public IList<string> GetMessages(IQueue queue)
+        public IList<string> GetMessages(Queue queue)
         {
             var queueClient = GetQueueClient(queue);
 

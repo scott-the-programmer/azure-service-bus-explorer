@@ -1,8 +1,6 @@
-using AzureServiceBusExplorerCore.Models.Interfaces;
-
 namespace AzureServiceBusExplorerCore.Models
 {
-    public class Topic : ITopic
+    public class Topic 
     {
         public Topic(string name, string description)
         {
