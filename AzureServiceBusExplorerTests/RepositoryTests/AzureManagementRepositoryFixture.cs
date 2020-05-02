@@ -15,33 +15,6 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
     public class AzureManagementRepositoryFixture
     {
         [Test]
-        public async Task should_add_subscriber_to_topic()
-        {
-            //Setup
-            var topic = new Topic("topic", "mock");
-            var subscriber = new Subscriber("topic", "subscription");
-            var managementClientMock = new Mock<IAzureManagementClient>();
-            var managementClientFactoryMock = new Mock<IManagementClientFactory>();
-            managementClientMock.Setup(mock => mock.CreateTopicSubscription(It.IsAny<Subscriber>()))
-                .Returns(Task.CompletedTask);
-            managementClientFactoryMock.Setup(mock => mock.GetManagementClient()).Returns(managementClientMock.Object);
-
-            var repo = new AzureManagementRepository(managementClientFactoryMock.Object);
-
-            //Act
-            await repo.CreateTopicSubscriptionAsync(topic, subscriber);
-
-            //Assert
-            Assert.Multiple(() =>
-            {
-                Assert.AreEqual(1, topic.Subscribers.Count);
-                Assert.AreEqual(subscriber, topic.Subscribers[0]);
-                managementClientMock.Verify(mock => mock.CreateTopicSubscription(It.IsAny<Subscriber>()),
-                    Times.Once());
-            });
-        }
-
-        [Test]
         public async Task should_create_new_queue()
         {
             //Setup
@@ -249,6 +222,63 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
 
             //Assert
             Assert.AreEqual(1, topics.Count);
+        }
+
+        [Test]
+        public async Task should_add_subscriber_to_topic()
+        {
+            //Setup
+            var topic = new Topic("topic", "mock");
+            var subscriber = new Subscriber("topic", "subscription");
+            var managementClientMock = new Mock<IAzureManagementClient>();
+            var managementClientFactoryMock = new Mock<IManagementClientFactory>();
+            managementClientMock.Setup(mock => mock.CreateTopicSubscription(It.IsAny<Subscriber>()))
+                .Returns(Task.CompletedTask);
+            managementClientFactoryMock.Setup(mock => mock.GetManagementClient()).Returns(managementClientMock.Object);
+
+            var repo = new AzureManagementRepository(managementClientFactoryMock.Object);
+
+            //Act
+            await repo.CreateTopicSubscriptionAsync(topic, subscriber);
+
+            //Assert
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(1, topic.Subscribers.Count);
+                Assert.AreEqual(subscriber, topic.Subscribers[0]);
+                managementClientMock.Verify(mock => mock.CreateTopicSubscription(It.IsAny<Subscriber>()),
+                    Times.Once());
+            });
+        }
+
+        [Test]
+        public async Task should_add_multiple_subscribers_to_topic()
+        {
+            //Setup
+            var topic = new Topic("topic", "mock");
+            var subscriber = new Subscriber("topic", "subscription");
+            var subscriber2 = new Subscriber("topic", "subscription2");
+            var managementClientMock = new Mock<IAzureManagementClient>();
+            var managementClientFactoryMock = new Mock<IManagementClientFactory>();
+            managementClientMock.Setup(mock => mock.CreateTopicSubscription(It.IsAny<Subscriber>()))
+                .Returns(Task.CompletedTask);
+            managementClientFactoryMock.Setup(mock => mock.GetManagementClient()).Returns(managementClientMock.Object);
+
+            var repo = new AzureManagementRepository(managementClientFactoryMock.Object);
+
+            //Act
+            await repo.CreateTopicSubscriptionAsync(topic, subscriber);
+            await repo.CreateTopicSubscriptionAsync(topic, subscriber2);
+
+            //Assert
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(2, topic.Subscribers.Count);
+                Assert.AreEqual(subscriber, topic.Subscribers[0]);
+                Assert.AreEqual(subscriber2, topic.Subscribers[1]);
+                managementClientMock.Verify(mock => mock.CreateTopicSubscription(It.IsAny<Subscriber>()),
+                    Times.Exactly(2));
+            });
         }
 
         [Test]
