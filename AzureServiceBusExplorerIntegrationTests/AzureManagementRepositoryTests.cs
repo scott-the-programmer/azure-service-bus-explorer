@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AzureServiceBusExplorerCore.Factories;
+using AzureServiceBusExplorerCore.Models;
 using AzureServiceBusExplorerCore.Repositories;
 using Microsoft.Azure.ServiceBus.Management;
 using Microsoft.Extensions.Configuration;
@@ -21,7 +22,7 @@ namespace AzureServiceBusExplorerIntegrationTests
                 .Build();
 
             _managementClientFactory = new ManagementClientFactory(config["ServiceBusConnection"]);
-            
+
             AzureManagementRepository repo = new AzureManagementRepository(_managementClientFactory);
             await repo.DeleteQueueAsync("integration_test_queue");
             await repo.DeleteQueueAsync("integration_test_topic");
@@ -54,20 +55,48 @@ namespace AzureServiceBusExplorerIntegrationTests
         }
 
         [Test]
+        public async Task can_delete_topic_that_does_not_exist()
+        {
+            AzureManagementRepository repo = new AzureManagementRepository(_managementClientFactory);
+
+            //Delete Queue
+            await repo.DeleteTopicAsync("i_do_not_exist");
+        }
+
+
+        [Test]
         public async Task should_apply_crd_on_topic()
         {
             AzureManagementRepository repo = new AzureManagementRepository(_managementClientFactory);
 
-            //Create Queue
-            await repo.CreateTopicAsync(new TopicDescription("integration_test_topic"));
+            //Create Topic
+            await repo.CreateTopicAsync(new Topic("integration_test_topic", "mock"));
 
-            //Read Queue
+            //Read Topic
             var topics = await repo.GetTopicsAsync();
             var queue = topics.Where(x => x.TopicName == "integration_test_topic");
             Assert.AreEqual(1, queue.Count());
 
-            //Delete Queue
+            //Delete Topic
             await repo.DeleteTopicAsync("integration_test_topic");
+        }
+
+
+        [Test]
+        public async Task can_create_subscriber_to_topic()
+        {
+            AzureManagementRepository repo = new AzureManagementRepository(_managementClientFactory);
+
+            //Create Topic
+            Topic topic = new Topic("can_create_subscriber_to_topic", "mock");
+            await repo.CreateTopicAsync(topic);
+
+            //Create Subscriber
+            Subscriber subscriber = new Subscriber("can_create_subscriber_to_topic", "can_create_subscriber_to_topic");
+            await repo.CreateTopicSubscriptionAsync(topic, subscriber);
+
+            //Delete Topic
+            await repo.DeleteTopicAsync("can_create_subscriber_to_topic");
         }
     }
 }
