@@ -1,3 +1,6 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using AzureServiceBusExplorerCore.Factories;
 using AzureServiceBusExplorerCore.Repositories;
 using Microsoft.Azure.ServiceBus;
@@ -63,6 +66,90 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
 
             //Assert
             Assert.AreEqual(1, _repo.CountActiveQueueClients());
+        }
+
+        [Test]
+        public async Task should_return_single_message()
+        {
+            //Setup
+            var queueClientMock = new Mock<IQueueClient>();
+            var queueClientFactoryMock = new Mock<IQueueClientFactory>();
+            queueClientMock.Setup(mock =>
+                mock.RegisterMessageHandler(It.IsAny<Func<Message, CancellationToken, Task>>(),
+                    It.IsAny<MessageHandlerOptions>()));
+            queueClientFactoryMock.Setup(mock => mock.GetQueueClient(It.IsAny<string>()))
+                .Returns(queueClientMock.Object);
+            _repo = new AzureServiceBusRepository(queueClientFactoryMock.Object);
+
+
+            //Act
+            var taskHandle = _repo.GetMessages(new QueueDescription("mock"), 1);
+
+            //Mock Messages
+            var messageState = _repo.GetMessageState();
+            messageState.AddMessage("abc");
+
+            //Act
+            var messages = await taskHandle;
+
+            //Assert
+            Assert.Multiple(
+                () =>
+                {
+                    Assert.AreEqual(1, messages.Count);
+                    Assert.AreEqual("abc", messages[0]);
+                });
+        }
+
+        [Test]
+        public async Task should_return_1000_messages()
+        {
+            //Setup
+            var queueClientMock = new Mock<IQueueClient>();
+            var queueClientFactoryMock = new Mock<IQueueClientFactory>();
+            queueClientMock.Setup(mock =>
+                mock.RegisterMessageHandler(It.IsAny<Func<Message, CancellationToken, Task>>(),
+                    It.IsAny<MessageHandlerOptions>()));
+            queueClientFactoryMock.Setup(mock => mock.GetQueueClient(It.IsAny<string>()))
+                .Returns(queueClientMock.Object);
+            _repo = new AzureServiceBusRepository(queueClientFactoryMock.Object);
+
+
+            //Act
+            var taskHandle = _repo.GetMessages(new QueueDescription("mock"), 1000);
+
+            //Mock Messages
+            var messageState = _repo.GetMessageState();
+
+            for (int i = 0; i < 1000; i++)
+                messageState.AddMessage("abc");
+
+            //Act
+            var messages = taskHandle.Result;
+
+            //Assert
+            Assert.AreEqual(1000, messages.Count);
+        }
+        
+        [Test]
+        public async Task should_time_out_trying_to_get_messages()
+        {
+            //Setup
+            var queueClientMock = new Mock<IQueueClient>();
+            var queueClientFactoryMock = new Mock<IQueueClientFactory>();
+            queueClientMock.Setup(mock =>
+                mock.RegisterMessageHandler(It.IsAny<Func<Message, CancellationToken, Task>>(),
+                    It.IsAny<MessageHandlerOptions>()));
+            queueClientFactoryMock.Setup(mock => mock.GetQueueClient(It.IsAny<string>()))
+                .Returns(queueClientMock.Object);
+            _repo = new AzureServiceBusRepository(queueClientFactoryMock.Object);
+
+
+            //Act
+            var messages = await _repo.GetMessages(new QueueDescription("mock"), 1000,2);
+            
+            //Assert
+            Assert.AreEqual(0, messages.Count);
         }
     }
 }

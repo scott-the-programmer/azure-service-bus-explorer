@@ -1,4 +1,7 @@
+using System.Threading.Tasks;
 using AzureServiceBusExplorerCore.Factories;
+using AzureServiceBusExplorerCore.Repositories;
+using Microsoft.Azure.ServiceBus.Management;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 
@@ -18,15 +21,5 @@ namespace AzureServiceBusExplorerIntegrationTests
 
             _queueFactory = new QueueClientFactory(config["ServiceBusConnection"]);
         }
-
-        //
-        // [Test]
-        // public void should_create_and_retrieve_queue_client()
-        // {
-        //     //Setup
-        //     AzureServiceBusRepository repo = new AzureServiceBusRepository(_queueFactory);
-        //
-        //     repo.GetQueueClient("");
-        // }
     }
 }
