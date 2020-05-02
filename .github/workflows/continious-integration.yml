@@ -23,19 +23,13 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Unit Test
-      run: dotnet test --no-restore --verbosity normal --filter Category!=Integration
+      run: dotnet test --no-restore --verbosity normal --filter Category!=Integration  /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=../coverage
 
     #Code Climate 
-    - uses: actions/setup-node@master
-      with:
-        node-version: '12'
-    - run: npm install -g yarn
-    - run: yarn install
-    - run: yarn build
     - name: Run Coverage
       uses: paambaati/codeclimate-action@v2.6.0
       env:
         CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
       with:
-        coverageCommand: dotnet test --filter Category!=Integration /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=coverage
+        coverageLocations: ${{github.workspace}}/coverage.info:lcov
       
