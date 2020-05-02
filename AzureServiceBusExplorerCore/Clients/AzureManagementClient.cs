@@ -12,23 +12,24 @@ namespace AzureServiceBusExplorerCore.Clients
     public class AzureManagementClient : IAzureManagementClient
     {
         private readonly ManagementClient _managementClient;
-        
+
         public AzureManagementClient(string connection)
         {
             _managementClient = new ManagementClient(connection);
         }
-        
+
         public Task<IList<QueueDescription>> GetQueuesAsync()
         {
             return _managementClient.GetQueuesAsync();
         }
-        
+
         public Task<IList<TopicDescription>> GetTopicsAsync()
         {
             return _managementClient.GetTopicsAsync();
         }
 
-        public Task CreateQueueAsync(QueueDescription queueDescription){
+        public Task CreateQueueAsync(QueueDescription queueDescription)
+        {
             return _managementClient.CreateQueueAsync(queueDescription);
         }
 
@@ -43,8 +44,9 @@ namespace AzureServiceBusExplorerCore.Clients
                 Console.WriteLine($"Topic {queueName} was not found");
             }
         }
-        
-        public Task CreateTopicAsync(Topic topic){
+
+        public Task CreateTopicAsync(Topic topic)
+        {
             return _managementClient.CreateTopicAsync(topic);
         }
 

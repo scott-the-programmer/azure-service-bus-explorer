@@ -14,6 +14,5 @@ namespace AzureServiceBusExplorerCore.Clients
         Task CreateTopicAsync(Topic topicDescription);
         Task CreateTopicSubscription(Subscriber subscriber);
         Task DeleteTopicIfExistsAsync(string topicName);
-        
     }
 }

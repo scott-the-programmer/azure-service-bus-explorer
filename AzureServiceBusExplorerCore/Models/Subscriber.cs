@@ -1,4 +1,3 @@
-
 using Microsoft.Azure.ServiceBus.Management;
 
 namespace AzureServiceBusExplorerCore.Models
@@ -8,6 +7,5 @@ namespace AzureServiceBusExplorerCore.Models
         public Subscriber(string topicName, string subscriptionName) : base(topicName, subscriptionName)
         {
         }
-
     }
 }

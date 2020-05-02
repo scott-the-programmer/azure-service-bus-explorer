@@ -9,11 +9,11 @@ namespace AzureServiceBusExplorerTests.FactoryTests
         [Test]
         public void should_initiate_management_factory()
         {
-            Assert.DoesNotThrow(()=>
+            Assert.DoesNotThrow(() =>
             {
                 var managementClientFactory = new ManagementClientFactory("mock");
                 Assert.IsNotNull(managementClientFactory);
-            });                
+            });
         }
     }
 }

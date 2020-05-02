@@ -7,8 +7,8 @@ namespace AzureServiceBusExplorerCore.Repositories
 {
     public class AzureServiceBusRepository
     {
-        private readonly IQueueClientFactory _queueClientFactory;
         private readonly Dictionary<string, IQueueClient> _activeQueueClients = new Dictionary<string, IQueueClient>();
+        private readonly IQueueClientFactory _queueClientFactory;
 
         public AzureServiceBusRepository(IQueueClientFactory queueClientFactory)
         {
@@ -19,7 +19,7 @@ namespace AzureServiceBusExplorerCore.Repositories
         {
             if (_activeQueueClients.ContainsKey(queue.QueueName))
                 return _activeQueueClients[queue.QueueName];
-            IQueueClient queueClient = _queueClientFactory.GetQueueClient(queue.QueueName);
+            var queueClient = _queueClientFactory.GetQueueClient(queue.QueueName);
             _activeQueueClients.Add(queue.QueueName, queueClient);
             return queueClient;
         }

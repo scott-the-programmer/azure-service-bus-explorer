@@ -22,7 +22,7 @@ namespace AzureServiceBusExplorerCore.Repositories
         {
             var queueDescriptions = await _azureManagementClient.GetQueuesAsync();
             var queues = queueDescriptions.Select(_ => new Queue(_.Path, _.UserMetadata))
-                .ToList<Queue>();
+                .ToList();
             return queues;
         }
 
@@ -40,7 +40,7 @@ namespace AzureServiceBusExplorerCore.Repositories
         {
             var topicDescriptions = await _azureManagementClient.GetTopicsAsync();
             var topics = topicDescriptions.Select(_ => new Topic(_.Path, _.UserMetadata))
-                .ToList<Topic>();
+                .ToList();
             return topics;
         }
 
@@ -52,15 +52,11 @@ namespace AzureServiceBusExplorerCore.Repositories
         public async Task CreateTopicSubscriptionAsync(Topic topic, Subscriber subscriber)
         {
             if (topic.Subscribers.Contains(subscriber))
-            {
                 throw new ArgumentException("This subscriber is already apart of the topic");
-            }
 
             if (subscriber.TopicPath != topic.TopicName)
-            {
                 throw new ArgumentException(
                     $"The subscriber topic {subscriber.TopicPath} does not match the given topic ${topic.TopicName}");
-            }
 
             await _azureManagementClient.CreateTopicSubscription(subscriber);
 
