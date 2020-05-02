@@ -370,3 +370,5 @@ integration_settings.json
 
 # Coverlet
 coverage.info
+coverage.lcov
+lcov.info
