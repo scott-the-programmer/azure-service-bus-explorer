@@ -367,3 +367,6 @@ FodyWeavers.xsd
 
 # Integration settings
 integration_settings.json
+
+# Coverlet
+coverage.info

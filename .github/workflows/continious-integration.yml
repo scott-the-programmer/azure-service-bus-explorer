@@ -23,3 +23,8 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Unit Test
       run: dotnet test --no-restore --verbosity normal --filter Category!=Integration
+    - uses: paambaati/codeclimate-action@v2.2.4
+      name: Run Coverage
+      with:
+        coverageCommand: coverageCommand dotnet test --filter Category!=Integration /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=coverage
+      

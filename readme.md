@@ -31,6 +31,12 @@ Run the following command to unit test the project
 dotnet test --filter Category!=Integration
 ```
 
+### With Coverage
+
+```bash
+dotnet test --filter Category!=Integration /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=coverage
+```
+
 ## Integration Test
 
 Configure [integration_settings.json](./AzureServiceBusExplorerIntegrationTests/integration_settings.json) with your service bus connection

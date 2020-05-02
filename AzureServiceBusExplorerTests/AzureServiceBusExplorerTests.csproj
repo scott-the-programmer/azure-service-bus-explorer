@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="coverlet.msbuild" Version="2.8.1" />
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0-preview.3.20215.2" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0-preview.3.20215.2" />
         <PackageReference Include="Moq" Version="4.14.1" />
