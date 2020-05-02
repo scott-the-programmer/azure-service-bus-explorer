@@ -1,10 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AzureServiceBusExplorerCore.Clients;
 using AzureServiceBusExplorerCore.Factories;
-using AzureServiceBusExplorerCore.Models;
 using Microsoft.Azure.ServiceBus.Management;
 
 namespace AzureServiceBusExplorerCore.Repositories
@@ -18,12 +15,9 @@ namespace AzureServiceBusExplorerCore.Repositories
             _azureManagementClient = managementClientFactory.GetManagementClient();
         }
 
-        public async Task<IList<Queue>> GetQueuesAsync()
+        public Task<IList<QueueDescription>> GetQueuesAsync()
         {
-            var queueDescriptions = await _azureManagementClient.GetQueuesAsync();
-            var queues = queueDescriptions.Select(_ => new Queue(_.Path, _.UserMetadata))
-                .ToList();
-            return queues;
+            return _azureManagementClient.GetQueuesAsync();
         }
 
         public Task CreateQueueAsync(QueueDescription queueDescription)
@@ -36,31 +30,19 @@ namespace AzureServiceBusExplorerCore.Repositories
             return _azureManagementClient.DeleteQueueIfExistsAsync(queueName);
         }
 
-        public async Task<IList<Topic>> GetTopicsAsync()
+        public Task<IList<TopicDescription>> GetTopicsAsync()
         {
-            var topicDescriptions = await _azureManagementClient.GetTopicsAsync();
-            var topics = topicDescriptions.Select(_ => new Topic(_.Path, _.UserMetadata))
-                .ToList();
-            return topics;
+            return _azureManagementClient.GetTopicsAsync();
         }
 
-        public Task CreateTopicAsync(Topic topic)
+        public Task CreateTopicAsync(TopicDescription topicDescription)
         {
-            return _azureManagementClient.CreateTopicAsync(topic);
+            return _azureManagementClient.CreateTopicAsync(topicDescription);
         }
 
-        public async Task CreateTopicSubscriptionAsync(Topic topic, Subscriber subscriber)
+        public async Task CreateTopicSubscriptionAsync(SubscriptionDescription subscriptionDescription)
         {
-            if (topic.Subscribers.Contains(subscriber))
-                throw new ArgumentException("This subscriber is already apart of the topic");
-
-            if (subscriber.TopicPath != topic.TopicName)
-                throw new ArgumentException(
-                    $"The subscriber topic {subscriber.TopicPath} does not match the given topic ${topic.TopicName}");
-
-            await _azureManagementClient.CreateTopicSubscription(subscriber);
-
-            topic.Subscribers.Add(subscriber);
+            await _azureManagementClient.CreateTopicSubscription(subscriptionDescription);
         }
 
         public Task DeleteTopicAsync(string topicName)

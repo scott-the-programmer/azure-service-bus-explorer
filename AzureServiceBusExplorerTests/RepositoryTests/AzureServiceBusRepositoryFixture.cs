@@ -1,7 +1,7 @@
 using AzureServiceBusExplorerCore.Factories;
-using AzureServiceBusExplorerCore.Models;
 using AzureServiceBusExplorerCore.Repositories;
 using Microsoft.Azure.ServiceBus;
+using Microsoft.Azure.ServiceBus.Management;
 using Moq;
 using NUnit.Framework;
 
@@ -23,7 +23,7 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
             _repo = new AzureServiceBusRepository(queueClientFactoryMock.Object);
 
             //Act
-            _repo.GetQueueClient(new Queue("mock", "mock"));
+            _repo.GetQueueClient(new QueueDescription("mock"));
 
             //Assert
             Assert.AreEqual(1, _repo.CountActiveQueueClients());
@@ -40,8 +40,8 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
             _repo = new AzureServiceBusRepository(queueClientFactoryMock.Object);
 
             //Act
-            _repo.GetQueueClient(new Queue("mock", "mock"));
-            _repo.GetQueueClient(new Queue("mock2", "mock"));
+            _repo.GetQueueClient(new QueueDescription("mock"));
+            _repo.GetQueueClient(new QueueDescription("mock2"));
 
             //Assert
             Assert.AreEqual(2, _repo.CountActiveQueueClients());
@@ -58,8 +58,8 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
             _repo = new AzureServiceBusRepository(queueClientFactoryMock.Object);
 
             //Act
-            _repo.GetQueueClient(new Queue("mock", "mock"));
-            _repo.GetQueueClient(new Queue("mock", "mock"));
+            _repo.GetQueueClient(new QueueDescription("mock"));
+            _repo.GetQueueClient(new QueueDescription("mock"));
 
             //Assert
             Assert.AreEqual(1, _repo.CountActiveQueueClients());

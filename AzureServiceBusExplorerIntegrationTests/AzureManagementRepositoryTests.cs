@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AzureServiceBusExplorerCore.Factories;
-using AzureServiceBusExplorerCore.Models;
 using AzureServiceBusExplorerCore.Repositories;
 using Microsoft.Azure.ServiceBus.Management;
 using Microsoft.Extensions.Configuration;
@@ -38,7 +37,7 @@ namespace AzureServiceBusExplorerIntegrationTests
 
             //Read Queue
             var queues = await repo.GetQueuesAsync();
-            var queue = queues.Where(x => x.QueueName == "integration_test_queue");
+            var queue = queues.Where(x => x.Path == "integration_test_queue");
             Assert.AreEqual(1, queue.Count());
 
             //Delete Queue
@@ -70,11 +69,11 @@ namespace AzureServiceBusExplorerIntegrationTests
             var repo = new AzureManagementRepository(_managementClientFactory);
 
             //Create Topic
-            await repo.CreateTopicAsync(new Topic("integration_test_topic", "mock"));
+            await repo.CreateTopicAsync(new TopicDescription("integration_test_topic"));
 
             //Read Topic
             var topics = await repo.GetTopicsAsync();
-            var queue = topics.Where(x => x.TopicName == "integration_test_topic");
+            var queue = topics.Where(x => x.Path == "integration_test_topic");
             Assert.AreEqual(1, queue.Count());
 
             //Delete Topic
@@ -88,12 +87,13 @@ namespace AzureServiceBusExplorerIntegrationTests
             var repo = new AzureManagementRepository(_managementClientFactory);
 
             //Create Topic
-            var topic = new Topic("can_create_subscriber_to_topic", "mock");
+            var topic = new TopicDescription("can_create_subscriber_to_topic");
             await repo.CreateTopicAsync(topic);
 
             //Create Subscriber
-            var subscriber = new Subscriber("can_create_subscriber_to_topic", "can_create_subscriber_to_topic");
-            await repo.CreateTopicSubscriptionAsync(topic, subscriber);
+            var subscriber =
+                new SubscriptionDescription("can_create_subscriber_to_topic", "can_create_subscriber_to_topic");
+            await repo.CreateTopicSubscriptionAsync(subscriber);
 
             //Delete Topic
             await repo.DeleteTopicAsync("can_create_subscriber_to_topic");

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AzureServiceBusExplorerCore.Models;
 using Microsoft.Azure.ServiceBus.Management;
 
 namespace AzureServiceBusExplorerCore.Clients
@@ -11,8 +10,8 @@ namespace AzureServiceBusExplorerCore.Clients
         Task<IList<TopicDescription>> GetTopicsAsync();
         Task CreateQueueAsync(QueueDescription queueDescription);
         Task DeleteQueueIfExistsAsync(string queueName);
-        Task CreateTopicAsync(Topic topicDescription);
-        Task CreateTopicSubscription(Subscriber subscriber);
+        Task CreateTopicAsync(TopicDescription topicDescriptionDescription);
+        Task CreateTopicSubscription(SubscriptionDescription subscriptionDescription);
         Task DeleteTopicIfExistsAsync(string topicName);
     }
 }
