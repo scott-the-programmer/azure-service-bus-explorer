@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -59,13 +58,13 @@ namespace AzureServiceBusExplorerCore.Repositories
             });
         }
 
-        internal Task MessagePumpExceptionHandler(ExceptionReceivedEventArgs args)
+        internal static Task MessagePumpExceptionHandler(ExceptionReceivedEventArgs args)
         {
             Console.WriteLine(args.Exception);
             return Task.CompletedTask;
         }
 
-        internal Task MessagePumpMessageHandler(Message message, MessageState state, CancellationToken token)
+        internal static Task MessagePumpMessageHandler(Message message, MessageState state, CancellationToken token)
         {
             state.AddMessage(Encoding.UTF8.GetString(message.Body));
             return Task.CompletedTask;

@@ -103,7 +103,7 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
         }
 
         [Test]
-        public async Task should_return_1000_messages()
+        public void should_return_1000_messages()
         {
             //Setup
             var queueClientMock = new Mock<IQueueClient>();
@@ -164,7 +164,7 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
             //Act & Assert
             Assert.DoesNotThrow(() =>
             {
-                _repo.MessagePumpExceptionHandler(new ExceptionReceivedEventArgs(new Exception("mock"), "mock",
+                AzureServiceBusRepository.MessagePumpExceptionHandler(new ExceptionReceivedEventArgs(new Exception("mock"), "mock",
                     "mock", "mock", "mock"));
             });
         }
@@ -180,7 +180,7 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
             _repo = new AzureServiceBusRepository(queueClientFactoryMock.Object);
 
             //Act
-            await _repo.MessagePumpMessageHandler(mockMessage, messageState, new CancellationToken());
+            await AzureServiceBusRepository.MessagePumpMessageHandler(mockMessage, messageState, new CancellationToken());
             
             //Assert
             Assert.AreEqual("test",messageState.GetMessages()[0]);
