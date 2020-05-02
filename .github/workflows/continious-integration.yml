@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
     #Core Build & Test
     - uses: actions/checkout@v2
     - name: Setup .NET Core
@@ -23,7 +24,7 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Unit Test
-      run: dotnet test --no-restore --verbosity normal --filter Category!=Integration  /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=../coverage
+      run: dotnet test --no-restore --verbosity normal --filter Category!=Integration 
 
     #Code Climate 
     - name: Run Coverage
@@ -31,5 +32,6 @@ jobs:
       env:
         CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
       with:
+        coverageCommand:  dotnet test --no-restore --verbosity normal --filter Category!=Integration  /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=../coverage
         coverageLocations: ${{github.workspace}}/coverage.info:lcov
       
