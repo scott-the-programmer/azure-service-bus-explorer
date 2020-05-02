@@ -15,7 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\AzureServiceBusExplorerCore\AzureServiceBusExplorerCore.csproj" />
+        <ProjectReference Include="..\AzureServiceBusExplorerCore\AzureServiceBusExplorerCore.csproj" />
     </ItemGroup>
 
     <ItemGroup>

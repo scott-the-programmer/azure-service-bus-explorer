@@ -24,6 +24,15 @@ namespace AzureServiceBusExplorerCore.Repositories
                 .ToList<Queue>();
             return queues;
         }
+        public Task CreateQueueAsync(QueueDescription queueDescription)
+        {
+            return _azureManagementClient.CreateQueueAsync(queueDescription);
+        }
+        
+        public Task DeleteQueueAsync(string queueName)
+        {
+            return _azureManagementClient.DeleteQueueIfExistsAsync(queueName);
+        }
         
         public async Task<IList<Topic>> GetTopicsAsync()
         {
@@ -31,6 +40,16 @@ namespace AzureServiceBusExplorerCore.Repositories
             var topics = topicDescriptions.Select(_ => new Topic(_.Path, _.UserMetadata))
                 .ToList<Topic>();
             return topics;
+        }
+        
+        public Task CreateTopicAsync(TopicDescription topicDescription)
+        {
+            return _azureManagementClient.CreateTopicAsync(topicDescription);
+        }
+
+        public Task DeleteTopicAsync(string topicName)
+        {
+            return _azureManagementClient.DeleteTopicIfExistsAsync(topicName);
         }
     }
 }

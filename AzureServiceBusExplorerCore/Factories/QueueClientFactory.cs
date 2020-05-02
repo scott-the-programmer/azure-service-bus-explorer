@@ -4,7 +4,6 @@ using Microsoft.Azure.ServiceBus;
 
 namespace AzureServiceBusExplorerCore.Factories
 {
-    [ExcludeFromCodeCoverage] //Real interactions with Azure
     public class QueueClientFactory : IQueueClientFactory
     {
         private readonly string _connection;

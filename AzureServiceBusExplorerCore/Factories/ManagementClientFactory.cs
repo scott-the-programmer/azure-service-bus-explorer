@@ -3,7 +3,7 @@ using AzureServiceBusExplorerCore.Clients;
 
 namespace AzureServiceBusExplorerCore.Factories
 {
-    [ExcludeFromCodeCoverage] //Real interactions with Azure
+
     public class ManagementClientFactory : IManagementClientFactory
     {
         private readonly string _connection;
