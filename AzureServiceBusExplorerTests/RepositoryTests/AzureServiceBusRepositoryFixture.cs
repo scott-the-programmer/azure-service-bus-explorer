@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -84,7 +85,7 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
 
 
             //Act
-            var taskHandle = _repo.GetMessages(new QueueDescription("mock"), 1);
+            var taskHandle = _repo.GetMessagesAsync(new QueueDescription("mock"), 1);
 
             //Mock Messages
             var messageState = _repo.GetMessageState();
@@ -101,7 +102,7 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
                     Assert.AreEqual("abc", messages[0]);
                 });
         }
-        
+
         [Test]
         public async Task should_close_client_after_processing()
         {
@@ -117,7 +118,7 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
 
 
             //Act
-            var taskHandle = _repo.GetMessages(new QueueDescription("mock"), 1);
+            var taskHandle = _repo.GetMessagesAsync(new QueueDescription("mock"), 1);
 
             //Mock Messages
             var messageState = _repo.GetMessageState();
@@ -145,7 +146,7 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
 
 
             //Act
-            var taskHandle = _repo.GetMessages(new QueueDescription("mock"), 1000);
+            var taskHandle = _repo.GetMessagesAsync(new QueueDescription("mock"), 1000);
 
             //Mock Messages
             var messageState = _repo.GetMessageState();
@@ -173,9 +174,8 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
                 .Returns(queueClientMock.Object);
             _repo = new AzureServiceBusRepository(queueClientFactoryMock.Object);
 
-
             //Act
-            var messages = await _repo.GetMessages(new QueueDescription("mock"), 1000, 2);
+            var messages = await _repo.GetMessagesAsync(new QueueDescription("mock"), 1000, 2);
 
             //Assert
             Assert.AreEqual(0, messages.Count);
@@ -192,12 +192,12 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
             //Act & Assert
             Assert.DoesNotThrow(() =>
             {
-                AzureServiceBusRepository.MessagePumpExceptionHandler(new ExceptionReceivedEventArgs(new Exception("mock"), "mock",
+                AzureServiceBusRepository.MessagePumpExceptionHandler(new ExceptionReceivedEventArgs(
+                    new Exception("mock"), "mock",
                     "mock", "mock", "mock"));
             });
         }
-        
-        
+
         [Test]
         public async Task should_add_message_to_state()
         {
@@ -208,10 +208,31 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
             _repo = new AzureServiceBusRepository(queueClientFactoryMock.Object);
 
             //Act
-            await AzureServiceBusRepository.MessagePumpMessageHandler(mockMessage, messageState, new CancellationToken());
-            
+            await AzureServiceBusRepository.MessagePumpReadHandler(mockMessage, messageState, new CancellationToken());
+
             //Assert
-            Assert.AreEqual("test",messageState.GetMessages()[0]);
+            Assert.AreEqual("test", messageState.GetMessages()[0]);
+        }
+
+        [Test]
+        public async Task should_send_message()
+        {
+            //Setup
+            var queueClientMock = new Mock<IQueueClient>();
+            var queueClientFactoryMock = new Mock<IQueueClientFactory>();
+            queueClientMock.Setup(mock =>
+                mock.SendAsync(It.IsAny<IList<Message>>())).Returns(Task.CompletedTask);
+            queueClientFactoryMock.Setup(mock => mock.GetQueueClient(It.IsAny<string>()))
+                .Returns(queueClientMock.Object);
+            _repo = new AzureServiceBusRepository(queueClientFactoryMock.Object);
+
+            List<Message> mockMessages = new List<Message> {new Message(Encoding.UTF8.GetBytes("test"))};
+
+            //Act
+            await _repo.SendMessagesAsync(new QueueDescription("mock"), mockMessages);
+
+            //Assert
+            queueClientMock.Verify(mock => mock.SendAsync(It.IsAny<IList<Message>>()), Times.Once);
         }
     }
 }

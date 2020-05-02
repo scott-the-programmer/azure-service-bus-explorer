@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +16,12 @@ namespace AzureServiceBusExplorerCore.Repositories
         private readonly IQueueClientFactory _queueClientFactory;
         private MessageState _messageState;
 
+        private readonly MessageHandlerOptions _messageOptions = new MessageHandlerOptions(MessagePumpExceptionHandler)
+        {
+            MaxConcurrentCalls = 1,
+            AutoComplete = false
+        };
+
         public AzureServiceBusRepository(IQueueClientFactory queueClientFactory)
         {
             _queueClientFactory = queueClientFactory;
@@ -29,20 +36,15 @@ namespace AzureServiceBusExplorerCore.Repositories
             return queueClient;
         }
 
-        public Task<IList<string>> GetMessages(QueueDescription queue, int n, int timeoutInSeconds = 30)
+        public Task<IList<string>> GetMessagesAsync(QueueDescription queue, int n, int timeoutInSeconds = 30)
         {
             var queueClient = GetQueueClient(queue);
 
             _messageState = new MessageState(n);
-            var messageHandlerOptions = new MessageHandlerOptions(MessagePumpExceptionHandler)
-            {
-                MaxConcurrentCalls = 1,
-                AutoComplete = false
-            };
 
             // Register the function that processes messages.
             queueClient.RegisterMessageHandler(
-                (message, token) => MessagePumpMessageHandler(message, _messageState, token), messageHandlerOptions);
+                (message, token) => MessagePumpReadHandler(message, _messageState, token), _messageOptions);
 
             return Task.Run(async () =>
             {
@@ -58,13 +60,19 @@ namespace AzureServiceBusExplorerCore.Repositories
             });
         }
 
+        public Task SendMessagesAsync(QueueDescription queue, IList<Message> messages)
+        {
+            var queueClient = GetQueueClient(queue);
+            return queueClient.SendAsync(messages);
+        }
+
         internal static Task MessagePumpExceptionHandler(ExceptionReceivedEventArgs args)
         {
             Console.WriteLine(args.Exception);
             return Task.CompletedTask;
         }
 
-        internal static Task MessagePumpMessageHandler(Message message, MessageState state, CancellationToken token)
+        internal static Task MessagePumpReadHandler(Message message, MessageState state, CancellationToken token)
         {
             state.AddMessage(Encoding.UTF8.GetString(message.Body));
             return Task.CompletedTask;
