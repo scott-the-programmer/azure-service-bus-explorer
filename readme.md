@@ -35,7 +35,8 @@ dotnet test --filter Category!=Integration
 ### With Coverage
 
 ```bash
-dotnet test --filter Category!=Integration /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=coverage
+dotnet test --filter Category!=Integration \
+/p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=../lcov.info
 ```
 
 ## Integration Test
