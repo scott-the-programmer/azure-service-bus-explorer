@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AzureServiceBusExplorerCore.Clients;
 using AzureServiceBusExplorerCore.Factories;
+using AzureServiceBusExplorerCore.Models;
 using AzureServiceBusExplorerCore.Repositories;
 using Microsoft.Azure.ServiceBus.Management;
 using Moq;
@@ -150,17 +152,17 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
             //Setup
             Mock<IAzureManagementClient> managementClientMock = new Mock<IAzureManagementClient>();
             Mock<IManagementClientFactory> managementClientFactoryMock = new Mock<IManagementClientFactory>();
-            managementClientMock.Setup(mock => mock.CreateTopicAsync(It.IsAny<TopicDescription>()))
+            managementClientMock.Setup(mock => mock.CreateTopicAsync(It.IsAny<Topic>()))
                 .Returns(Task.CompletedTask);
             managementClientFactoryMock.Setup(mock => mock.GetManagementClient()).Returns(managementClientMock.Object);
 
             AzureManagementRepository repo = new AzureManagementRepository(managementClientFactoryMock.Object);
 
             //Act
-            await repo.CreateTopicAsync(new TopicDescription("mock"));
+            await repo.CreateTopicAsync(new Topic("mock", "mock"));
 
             //Assert
-            managementClientMock.Verify(mock => mock.CreateTopicAsync(It.IsAny<TopicDescription>()),
+            managementClientMock.Verify(mock => mock.CreateTopicAsync(It.IsAny<Topic>()),
                 Times.Once());
         }
 
@@ -170,7 +172,8 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
             //Setup
             Mock<IAzureManagementClient> managementClientMock = new Mock<IAzureManagementClient>();
             Mock<IManagementClientFactory> managementClientFactoryMock = new Mock<IManagementClientFactory>();
-            managementClientMock.Setup(mock => mock.DeleteTopicIfExistsAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
+            managementClientMock.Setup(mock => mock.DeleteTopicIfExistsAsync(It.IsAny<string>()))
+                .Returns(Task.CompletedTask);
             managementClientFactoryMock.Setup(mock => mock.GetManagementClient()).Returns(managementClientMock.Object);
 
             AzureManagementRepository repo = new AzureManagementRepository(managementClientFactoryMock.Object);
@@ -208,7 +211,8 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
             //Setup
             Mock<IAzureManagementClient> managementClientMock = new Mock<IAzureManagementClient>();
             Mock<IManagementClientFactory> managementClientFactoryMock = new Mock<IManagementClientFactory>();
-            managementClientMock.Setup(mock => mock.DeleteQueueIfExistsAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
+            managementClientMock.Setup(mock => mock.DeleteQueueIfExistsAsync(It.IsAny<string>()))
+                .Returns(Task.CompletedTask);
             managementClientFactoryMock.Setup(mock => mock.GetManagementClient()).Returns(managementClientMock.Object);
 
             AzureManagementRepository repo = new AzureManagementRepository(managementClientFactoryMock.Object);
@@ -218,6 +222,72 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
 
             //Assert
             managementClientMock.Verify(mock => mock.DeleteQueueIfExistsAsync(It.IsAny<string>()), Times.Once());
+        }
+
+
+        [Test]
+        public async Task should_add_subscriber_to_topic()
+        {
+            //Setup
+            Topic topic = new Topic("topic", "mock");
+            Subscriber subscriber = new Subscriber("topic", "subscription");
+            Mock<IAzureManagementClient> managementClientMock = new Mock<IAzureManagementClient>();
+            Mock<IManagementClientFactory> managementClientFactoryMock = new Mock<IManagementClientFactory>();
+            managementClientMock.Setup(mock => mock.CreateTopicSubscription(It.IsAny<Subscriber>())).Returns(Task.CompletedTask);
+            managementClientFactoryMock.Setup(mock => mock.GetManagementClient()).Returns(managementClientMock.Object);
+
+            AzureManagementRepository repo = new AzureManagementRepository(managementClientFactoryMock.Object);
+
+            //Act
+            await repo.CreateTopicSubscriptionAsync(topic, subscriber);
+
+            //Assert
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(1, topic.Subscribers.Count);
+                Assert.AreEqual(subscriber, topic.Subscribers[0]);
+                managementClientMock.Verify(mock => mock.CreateTopicSubscription(It.IsAny<Subscriber>()),
+                    Times.Once());
+            });
+        }
+
+        [Test]
+        public async Task should_throw_if_subscriber_already_is_subscribed()
+        {
+            //Setup
+            Topic topic = new Topic("topic", "mock");
+            Subscriber subscriber = new Subscriber("topic", "subscription");
+            Mock<IAzureManagementClient> managementClientMock = new Mock<IAzureManagementClient>();
+            Mock<IManagementClientFactory> managementClientFactoryMock = new Mock<IManagementClientFactory>();
+            managementClientMock.Setup(mock => mock.CreateTopicAsync(It.IsAny<Topic>()))
+                .Returns(Task.CompletedTask);
+            managementClientFactoryMock.Setup(mock => mock.GetManagementClient()).Returns(managementClientMock.Object);
+
+            AzureManagementRepository repo = new AzureManagementRepository(managementClientFactoryMock.Object);
+
+            //Act
+            await repo.CreateTopicSubscriptionAsync(topic, subscriber);
+
+            //Assert
+            Assert.ThrowsAsync<ArgumentException>(() => repo.CreateTopicSubscriptionAsync(topic, subscriber));
+        }
+        
+        [Test]
+        public void should_throw_if_subscriber_topic_doesnt_match_topic()
+        {
+            //Setup
+            Topic topic = new Topic("topic", "mock");
+            Subscriber subscriber = new Subscriber("topic2", "subscription");
+            Mock<IAzureManagementClient> managementClientMock = new Mock<IAzureManagementClient>();
+            Mock<IManagementClientFactory> managementClientFactoryMock = new Mock<IManagementClientFactory>();
+            managementClientMock.Setup(mock => mock.CreateTopicAsync(It.IsAny<Topic>()))
+                .Returns(Task.CompletedTask);
+            managementClientFactoryMock.Setup(mock => mock.GetManagementClient()).Returns(managementClientMock.Object);
+
+            AzureManagementRepository repo = new AzureManagementRepository(managementClientFactoryMock.Object);
+
+            //Act & Assert
+            Assert.ThrowsAsync<ArgumentException>(() => repo.CreateTopicSubscriptionAsync(topic, subscriber));
         }
     }
 }
