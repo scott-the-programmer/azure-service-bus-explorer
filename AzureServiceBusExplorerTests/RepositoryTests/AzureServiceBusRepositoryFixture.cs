@@ -7,6 +7,7 @@ using NUnit.Framework;
 
 namespace AzureServiceBusExplorerTests.RepositoryTests
 {
+    [TestFixture]
     public class AzureServiceBusRepositoryFixture
     {
         private AzureServiceBusRepository _repo;
