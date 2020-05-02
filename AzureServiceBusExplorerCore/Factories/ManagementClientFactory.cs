@@ -4,7 +4,7 @@ namespace AzureServiceBusExplorerCore.Factories
 {
     public class ManagementClientFactory : IManagementClientFactory
     {
-        private string _connection;
+        private readonly string _connection;
         
         public ManagementClientFactory(string connection)
         {
