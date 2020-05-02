@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,16 +25,17 @@ namespace AzureServiceBusExplorerCore.Repositories
                 .ToList<Queue>();
             return queues;
         }
+
         public Task CreateQueueAsync(QueueDescription queueDescription)
         {
             return _azureManagementClient.CreateQueueAsync(queueDescription);
         }
-        
+
         public Task DeleteQueueAsync(string queueName)
         {
             return _azureManagementClient.DeleteQueueIfExistsAsync(queueName);
         }
-        
+
         public async Task<IList<Topic>> GetTopicsAsync()
         {
             var topicDescriptions = await _azureManagementClient.GetTopicsAsync();
@@ -41,10 +43,28 @@ namespace AzureServiceBusExplorerCore.Repositories
                 .ToList<Topic>();
             return topics;
         }
-        
-        public Task CreateTopicAsync(TopicDescription topicDescription)
+
+        public Task CreateTopicAsync(Topic topic)
         {
-            return _azureManagementClient.CreateTopicAsync(topicDescription);
+            return _azureManagementClient.CreateTopicAsync(topic);
+        }
+
+        public async Task CreateTopicSubscriptionAsync(Topic topic, Subscriber subscriber)
+        {
+            if (topic.Subscribers.Contains(subscriber))
+            {
+                throw new ArgumentException("This subscriber is already apart of the topic");
+            }
+
+            if (subscriber.TopicPath != topic.TopicName)
+            {
+                throw new ArgumentException(
+                    $"The subscriber topic {subscriber.TopicPath} does not match the given topic ${topic.TopicName}");
+            }
+
+            await _azureManagementClient.CreateTopicSubscription(subscriber);
+
+            topic.Subscribers.Add(subscriber);
         }
 
         public Task DeleteTopicAsync(string topicName)

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using AzureServiceBusExplorerCore.Models;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Management;
 
@@ -43,8 +44,13 @@ namespace AzureServiceBusExplorerCore.Clients
             }
         }
         
-        public Task CreateTopicAsync(TopicDescription topicDescription){
-            return _managementClient.CreateTopicAsync(topicDescription);
+        public Task CreateTopicAsync(Topic topic){
+            return _managementClient.CreateTopicAsync(topic);
+        }
+
+        public Task CreateTopicSubscription(Subscriber subscriber)
+        {
+            return _managementClient.CreateSubscriptionAsync(subscriber);
         }
 
         public async Task DeleteTopicIfExistsAsync(string topicName)
