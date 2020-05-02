@@ -1,9 +1,11 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.Azure.ServiceBus.Management;
 
 namespace AzureServiceBusExplorerCore.Clients
 {
+    [ExcludeFromCodeCoverage] //Real interactions with Azure
     public class AzureManagementClient : IAzureManagementClient
     {
         private readonly ManagementClient _managementClient;
