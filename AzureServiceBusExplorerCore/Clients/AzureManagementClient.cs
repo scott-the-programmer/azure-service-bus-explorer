@@ -27,12 +27,6 @@ namespace AzureServiceBusExplorerCore.Clients
             return _managementClient.GetTopicsAsync();
         }
 
-        public Task CreateQueueAsync(string name, string metadata)
-        {
-            var queueDescription = new QueueDescription(name) {UserMetadata = metadata};
-            return CreateQueueAsync(queueDescription);
-        }
-        
         public Task CreateQueueAsync(QueueDescription queueDescription){
             return _managementClient.CreateQueueAsync(queueDescription);
         }
@@ -47,12 +41,6 @@ namespace AzureServiceBusExplorerCore.Clients
             {
                 Console.WriteLine($"Topic {queueName} was not found");
             }
-        }
-
-        public Task CreateTopicAsync(string name, string metadata)
-        {
-            var topicDescription = new TopicDescription(name) {UserMetadata = metadata};
-            return CreateTopicAsync(topicDescription);
         }
         
         public Task CreateTopicAsync(TopicDescription topicDescription){
