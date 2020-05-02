@@ -35,22 +35,15 @@ namespace AzureServiceBusExplorerCore.Repositories
             var queueClient = GetQueueClient(queue);
 
             _messageState = new MessageState(n);
-            var messageHandlerOptions = new MessageHandlerOptions(args =>
-            {
-                Console.WriteLine(args.Exception);
-                return Task.CompletedTask;
-            })
+            var messageHandlerOptions = new MessageHandlerOptions(MessagePumpExceptionHandler)
             {
                 MaxConcurrentCalls = 1,
                 AutoComplete = false
             };
 
             // Register the function that processes messages.
-            queueClient.RegisterMessageHandler((message, token) =>
-            {
-                _messageState.AddMessage(Encoding.UTF8.GetString(message.Body));
-                return Task.CompletedTask;
-            }, messageHandlerOptions);
+            queueClient.RegisterMessageHandler(
+                (message, token) => MessagePumpMessageHandler(message, _messageState, token), messageHandlerOptions);
 
             return Task.Run(async () =>
             {
@@ -60,9 +53,22 @@ namespace AzureServiceBusExplorerCore.Repositories
                     Thread.Sleep(1000);
                     time++;
                 }
+
                 await queueClient.CloseAsync();
                 return _messageState.GetMessages();
             });
+        }
+
+        internal Task MessagePumpExceptionHandler(ExceptionReceivedEventArgs args)
+        {
+            Console.WriteLine(args.Exception);
+            return Task.CompletedTask;
+        }
+
+        internal Task MessagePumpMessageHandler(Message message, MessageState state, CancellationToken token)
+        {
+            state.AddMessage(Encoding.UTF8.GetString(message.Body));
+            return Task.CompletedTask;
         }
 
         internal MessageState GetMessageState()
