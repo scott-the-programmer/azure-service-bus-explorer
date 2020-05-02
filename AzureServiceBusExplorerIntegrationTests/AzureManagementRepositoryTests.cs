@@ -23,7 +23,7 @@ namespace AzureServiceBusExplorerIntegrationTests
 
             _managementClientFactory = new ManagementClientFactory(config["ServiceBusConnection"]);
 
-            AzureManagementRepository repo = new AzureManagementRepository(_managementClientFactory);
+            var repo = new AzureManagementRepository(_managementClientFactory);
             await repo.DeleteQueueAsync("integration_test_queue");
             await repo.DeleteQueueAsync("integration_test_topic");
         }
@@ -31,7 +31,7 @@ namespace AzureServiceBusExplorerIntegrationTests
         [Test]
         public async Task should_apply_crd_on_queue()
         {
-            AzureManagementRepository repo = new AzureManagementRepository(_managementClientFactory);
+            var repo = new AzureManagementRepository(_managementClientFactory);
 
             //Create Queue
             await repo.CreateQueueAsync(new QueueDescription("integration_test_queue"));
@@ -48,7 +48,7 @@ namespace AzureServiceBusExplorerIntegrationTests
         [Test]
         public async Task can_delete_queue_that_does_not_exist()
         {
-            AzureManagementRepository repo = new AzureManagementRepository(_managementClientFactory);
+            var repo = new AzureManagementRepository(_managementClientFactory);
 
             //Delete Queue
             await repo.DeleteQueueAsync("i_do_not_exist");
@@ -57,7 +57,7 @@ namespace AzureServiceBusExplorerIntegrationTests
         [Test]
         public async Task can_delete_topic_that_does_not_exist()
         {
-            AzureManagementRepository repo = new AzureManagementRepository(_managementClientFactory);
+            var repo = new AzureManagementRepository(_managementClientFactory);
 
             //Delete Queue
             await repo.DeleteTopicAsync("i_do_not_exist");
@@ -67,7 +67,7 @@ namespace AzureServiceBusExplorerIntegrationTests
         [Test]
         public async Task should_apply_crd_on_topic()
         {
-            AzureManagementRepository repo = new AzureManagementRepository(_managementClientFactory);
+            var repo = new AzureManagementRepository(_managementClientFactory);
 
             //Create Topic
             await repo.CreateTopicAsync(new Topic("integration_test_topic", "mock"));
@@ -85,14 +85,14 @@ namespace AzureServiceBusExplorerIntegrationTests
         [Test]
         public async Task can_create_subscriber_to_topic()
         {
-            AzureManagementRepository repo = new AzureManagementRepository(_managementClientFactory);
+            var repo = new AzureManagementRepository(_managementClientFactory);
 
             //Create Topic
-            Topic topic = new Topic("can_create_subscriber_to_topic", "mock");
+            var topic = new Topic("can_create_subscriber_to_topic", "mock");
             await repo.CreateTopicAsync(topic);
 
             //Create Subscriber
-            Subscriber subscriber = new Subscriber("can_create_subscriber_to_topic", "can_create_subscriber_to_topic");
+            var subscriber = new Subscriber("can_create_subscriber_to_topic", "can_create_subscriber_to_topic");
             await repo.CreateTopicSubscriptionAsync(topic, subscriber);
 
             //Delete Topic

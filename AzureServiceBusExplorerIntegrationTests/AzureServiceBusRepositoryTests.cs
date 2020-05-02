@@ -1,5 +1,4 @@
 using AzureServiceBusExplorerCore.Factories;
-using AzureServiceBusExplorerCore.Repositories;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 
