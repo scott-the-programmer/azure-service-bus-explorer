@@ -47,6 +47,7 @@ namespace AzureServiceBusExplorerCore.Repositories
                 (message, _) => MessagePumpReadHandler(message, _messageState), _messageOptions);
 
             await WaitForServicePumpActionAsync(() => _messageState.IsFull(), timeoutInSeconds);
+            _activeQueueClients.Remove(queueClient.Path); //TODO: Gross way of handling queue disposal
             await queueClient.CloseAsync();
             return _messageState.GetMessages();
         }
@@ -82,7 +83,7 @@ namespace AzureServiceBusExplorerCore.Repositories
             return Task.CompletedTask;
         }
 
-        internal static Task MessagePumpDeleteHandler(IQueueClient queueClient, Message incomingMessage,
+        internal Task MessagePumpDeleteHandler(IQueueClient queueClient, Message incomingMessage,
             Message messageToDelete, ref bool notifier)
         {
             if (incomingMessage.MessageId == messageToDelete.MessageId)
@@ -91,7 +92,9 @@ namespace AzureServiceBusExplorerCore.Repositories
                     ? incomingMessage.SystemProperties.LockToken
                     : null);
                 notifier = true;
+                _activeQueueClients.Remove(queueClient.Path); //TODO: Gross way of handling queue disposal
                 queueClient.CloseAsync();
+
             }
 
             return Task.CompletedTask;

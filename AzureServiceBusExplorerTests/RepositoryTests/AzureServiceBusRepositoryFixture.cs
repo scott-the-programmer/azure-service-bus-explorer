@@ -42,6 +42,7 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
             queueClientMock.Setup(mock =>
                 mock.RegisterMessageHandler(It.IsAny<Func<Message, CancellationToken, Task>>(),
                     It.IsAny<MessageHandlerOptions>()));
+            queueClientMock.Setup(mock => mock.Path).Returns("Mock");
             queueClientFactoryMock.Setup(mock => mock.GetQueueClient(It.IsAny<string>()))
                 .Returns(queueClientMock.Object);
             _repo = new AzureServiceBusRepository(queueClientFactoryMock.Object);
@@ -122,6 +123,7 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
             queueClientMock.Setup(mock =>
                 mock.RegisterMessageHandler(It.IsAny<Func<Message, CancellationToken, Task>>(),
                     It.IsAny<MessageHandlerOptions>()));
+            queueClientMock.Setup(mock => mock.Path).Returns("Mock");
             queueClientFactoryMock.Setup(mock => mock.GetQueueClient(It.IsAny<string>()))
                 .Returns(queueClientMock.Object);
             _repo = new AzureServiceBusRepository(queueClientFactoryMock.Object);
@@ -152,6 +154,7 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
             queueClientMock.Setup(mock =>
                 mock.RegisterMessageHandler(It.IsAny<Func<Message, CancellationToken, Task>>(),
                     It.IsAny<MessageHandlerOptions>()));
+            queueClientMock.Setup(mock => mock.Path).Returns("Mock");
             queueClientFactoryMock.Setup(mock => mock.GetQueueClient(It.IsAny<string>()))
                 .Returns(queueClientMock.Object);
             _repo = new AzureServiceBusRepository(queueClientFactoryMock.Object);
@@ -224,6 +227,7 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
             queueClientMock.Setup(mock =>
                 mock.RegisterMessageHandler(It.IsAny<Func<Message, CancellationToken, Task>>(),
                     It.IsAny<MessageHandlerOptions>()));
+            queueClientMock.Setup(mock => mock.Path).Returns("Mock");
             queueClientFactoryMock.Setup(mock => mock.GetQueueClient(It.IsAny<string>()))
                 .Returns(queueClientMock.Object);
             _repo = new AzureServiceBusRepository(queueClientFactoryMock.Object);
@@ -234,41 +238,54 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
             //Assert
             Assert.AreEqual(0, messages.Count);
         }
-        
+
         [Test]
         public async Task should_delete_message_in_service_pump()
         {
             //Setup
             var queueClientMock = new Mock<IQueueClient>();
+            var queueClientFactoryMock = new Mock<IQueueClientFactory>();
             queueClientMock.Setup(mock => mock.CompleteAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
-            queueClientMock.Setup(mock => mock.CloseAsync()).Returns(Task.CompletedTask);;
-            var messageToDelete = new Message{MessageId = "1"};
-            var incomingMessage = new Message{MessageId = "1"};
+            queueClientMock.Setup(mock => mock.CloseAsync()).Returns(Task.CompletedTask);
+            queueClientMock.Setup(mock => mock.Path).Returns("Mock");
+            queueClientFactoryMock.Setup(mock => mock.GetQueueClient(It.IsAny<string>()))
+                .Returns(queueClientMock.Object);
+            var messageToDelete = new Message {MessageId = "1"};
+            var incomingMessage = new Message {MessageId = "1"};
             var completed = true;
             
+            var repo = new AzureServiceBusRepository(queueClientFactoryMock.Object);
+
             //Act
-            await AzureServiceBusRepository.MessagePumpDeleteHandler(queueClientMock.Object, incomingMessage, messageToDelete,
+            await repo.MessagePumpDeleteHandler(queueClientMock.Object, incomingMessage,
+                messageToDelete,
                 ref completed);
-            
+
             //Assert
             queueClientMock.Verify(mock => mock.CompleteAsync(It.IsAny<string>()), Times.Once);
         }
-        
+
         [Test]
         public async Task should_not_delete_message_if_not_found_in_service_pump()
         {
             //Setup
             var queueClientMock = new Mock<IQueueClient>();
+            var queueClientFactoryMock = new Mock<IQueueClientFactory>();
             queueClientMock.Setup(mock => mock.CompleteAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
-            queueClientMock.Setup(mock => mock.CloseAsync()).Returns(Task.CompletedTask);;
-            var messageToDelete = new Message{MessageId = "1"};
-            var incomingMessage = new Message{MessageId = "2"};
+            queueClientMock.Setup(mock => mock.CloseAsync()).Returns(Task.CompletedTask);
+            queueClientFactoryMock.Setup(mock => mock.GetQueueClient(It.IsAny<string>()))
+                .Returns(queueClientMock.Object);
+            
+            var messageToDelete = new Message {MessageId = "1"};
+            var incomingMessage = new Message {MessageId = "2"};
             var completed = true;
-            
+            var repo = new AzureServiceBusRepository(queueClientFactoryMock.Object);
+
             //Act
-            await AzureServiceBusRepository.MessagePumpDeleteHandler(queueClientMock.Object, incomingMessage, messageToDelete,
+            await repo.MessagePumpDeleteHandler(queueClientMock.Object, incomingMessage,
+                messageToDelete,
                 ref completed);
-            
+
             //Assert
             queueClientMock.Verify(mock => mock.CompleteAsync(It.IsAny<string>()), Times.Never);
         }
