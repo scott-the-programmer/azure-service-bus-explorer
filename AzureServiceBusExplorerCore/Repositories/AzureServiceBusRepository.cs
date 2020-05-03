@@ -36,7 +36,7 @@ namespace AzureServiceBusExplorerCore.Repositories
             return queueClient;
         }
 
-        public Task<IList<string>> GetMessagesAsync(QueueDescription queue, int n, int timeoutInSeconds = 30)
+        public async Task<IList<string>> GetMessagesAsync(QueueDescription queue, int n, int timeoutInSeconds = 30)
         {
             var queueClient = GetQueueClient(queue);
 
@@ -44,20 +44,11 @@ namespace AzureServiceBusExplorerCore.Repositories
 
             // Register the function that processes messages.
             queueClient.RegisterMessageHandler(
-                (message, token) => MessagePumpReadHandler(message, _messageState, token), _messageOptions);
+                (message, _) => MessagePumpReadHandler(message, _messageState), _messageOptions);
 
-            return Task.Run(async () =>
-            {
-                var time = 0;
-                while (!_messageState.IsFull() && time < timeoutInSeconds)
-                {
-                    Thread.Sleep(1000);
-                    time++;
-                }
-
-                await queueClient.CloseAsync();
-                return _messageState.GetMessages();
-            });
+            await WaitForServicePumpActionAsync(() => _messageState.IsFull(), timeoutInSeconds);
+            await queueClient.CloseAsync();
+            return _messageState.GetMessages();
         }
 
         public Task SendMessagesAsync(QueueDescription queue, IList<Message> messages)
@@ -66,16 +57,57 @@ namespace AzureServiceBusExplorerCore.Repositories
             return queueClient.SendAsync(messages);
         }
 
+        public async Task DeleteMessageAsync(QueueDescription queue, Message message, int timeoutInSeconds = 30)
+        {
+            var queueClient = GetQueueClient(queue);
+
+            bool completed = false;
+            // Register the function that processes messages.
+            queueClient.RegisterMessageHandler(
+                (incomingMessage, _) => MessagePumpDeleteHandler(queueClient, incomingMessage, message, ref completed),
+                _messageOptions);
+
+            await WaitForServicePumpActionAsync(() => completed, timeoutInSeconds);
+        }
+
         internal static Task MessagePumpExceptionHandler(ExceptionReceivedEventArgs args)
         {
             Console.WriteLine(args.Exception);
             return Task.CompletedTask;
         }
 
-        internal static Task MessagePumpReadHandler(Message message, MessageState state, CancellationToken token)
+        internal static Task MessagePumpReadHandler(Message message, MessageState state)
         {
             state.AddMessage(Encoding.UTF8.GetString(message.Body));
             return Task.CompletedTask;
+        }
+
+        internal static Task MessagePumpDeleteHandler(IQueueClient queueClient, Message incomingMessage,
+            Message messageToDelete, ref bool notifier)
+        {
+            if (incomingMessage.MessageId == messageToDelete.MessageId)
+            {
+                queueClient.CompleteAsync(incomingMessage.SystemProperties.IsLockTokenSet
+                    ? incomingMessage.SystemProperties.LockToken
+                    : null);
+                notifier = true;
+                queueClient.CloseAsync();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        private static Task WaitForServicePumpActionAsync(Func<bool> action, int timeoutInSeconds)
+        {
+            return Task.Run(() =>
+            {
+                var time = 0;
+                while (!action() && time < timeoutInSeconds)
+                {
+                    Thread.Sleep(1000);
+                    time++;
+                }
+            });
         }
 
         internal MessageState GetMessageState()

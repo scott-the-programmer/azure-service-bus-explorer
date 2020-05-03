@@ -27,7 +27,7 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
             _repo = new AzureServiceBusRepository(queueClientFactoryMock.Object);
 
             //Act
-            await AzureServiceBusRepository.MessagePumpReadHandler(mockMessage, messageState, new CancellationToken());
+            await AzureServiceBusRepository.MessagePumpReadHandler(mockMessage, messageState);
 
             //Assert
             Assert.AreEqual("test", messageState.GetMessages()[0]);
@@ -233,6 +233,45 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
 
             //Assert
             Assert.AreEqual(0, messages.Count);
+        }
+        
+        [Test]
+        public async Task should_delete_message()
+        {
+            //Setup
+            var queueClientMock = new Mock<IQueueClient>();
+            queueClientMock.Setup(mock => mock.CompleteAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
+            queueClientMock.Setup(mock => mock.CloseAsync()).Returns(Task.CompletedTask);;
+            var messageToDelete = new Message{MessageId = "1"};
+            var incomingMessage = new Message{MessageId = "1"};
+            var completed = true;
+            
+            //Act
+            await AzureServiceBusRepository.MessagePumpDeleteHandler(queueClientMock.Object, incomingMessage, messageToDelete,
+                ref completed);
+            
+            //Assert
+            queueClientMock.Verify(mock => mock.CompleteAsync(It.IsAny<string>()), Times.Once);
+        }
+        
+          
+        [Test]
+        public async Task should_not_delete_message_if_not_found()
+        {
+            //Setup
+            var queueClientMock = new Mock<IQueueClient>();
+            queueClientMock.Setup(mock => mock.CompleteAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
+            queueClientMock.Setup(mock => mock.CloseAsync()).Returns(Task.CompletedTask);;
+            var messageToDelete = new Message{MessageId = "1"};
+            var incomingMessage = new Message{MessageId = "2"};
+            var completed = true;
+            
+            //Act
+            await AzureServiceBusRepository.MessagePumpDeleteHandler(queueClientMock.Object, incomingMessage, messageToDelete,
+                ref completed);
+            
+            //Assert
+            queueClientMock.Verify(mock => mock.CompleteAsync(It.IsAny<string>()), Times.Never);
         }
     }
 }
