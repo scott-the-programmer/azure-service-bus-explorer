@@ -236,7 +236,7 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
         }
         
         [Test]
-        public async Task should_delete_message()
+        public async Task should_delete_message_in_service_pump()
         {
             //Setup
             var queueClientMock = new Mock<IQueueClient>();
@@ -254,9 +254,8 @@ namespace AzureServiceBusExplorerTests.RepositoryTests
             queueClientMock.Verify(mock => mock.CompleteAsync(It.IsAny<string>()), Times.Once);
         }
         
-          
         [Test]
-        public async Task should_not_delete_message_if_not_found()
+        public async Task should_not_delete_message_if_not_found_in_service_pump()
         {
             //Setup
             var queueClientMock = new Mock<IQueueClient>();
